@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- // H E A D E R ///////////////////////// -->
+	<title>REGEX-JS : Learn JS regular expressions</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="nav-holder">
+		
+		<div class="container mynav">
+			<img src="imgs/i2.png" />
+			<span>REGEX-JS</span>
+			<div>
+				Learn Javascript's regular expressions.
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row bod">
+			<div class="col-md-6 block">
+				<br>
+				<h1 class="Title">Editor</h1>
+				<div>
+					<div class="inp-box">
+						<textarea spellcheck="false" class="text reg-exp" rows="1"></textarea>
+						<span data-hint="Regular expression"></span>
+					</div>
+					<div class="inp-box">
+						<textarea spellcheck="false"  class="text reg-test" rows="1"></textarea>
+						<span data-hint="Text for test"></span>
+					</div>
+				</div>
+				<br>
+				<span class="toggle"><i data-param="i" class='fa fa-toggle-off' aria-hidden='true'></i> <span>ignore case (a=A)</span></span>
+				<br><br>
+			</div>
+			<div class="col-md-6 block">
+				<br>
+				<h1 class="Title">Documentation</h1>
+				<div class="all-tuts"></div>
+			</div>
+		</div>
+		<br><br>
+		<span class="me" style="cursor: pointer;">Developed by: Hamza Herbou</span>
+	</div>
+
+	<div class="toast">copied to clipboard..</div>
+	<input class="copy" style="opacity: 0;position: absolute;left: -1000px;">
+
+
+	<div class="loading">
+		<div class="logo">
+			<img src="imgs/i2.png" /><br>
+			<br>
+			<span>LOADING..</span>
+		</div>
+	</div>
+
+	<!-- // S C R I P T S /////////////////////// -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script>
+    	var docs = [
+    		{code:"[.....]", desc:"Any one character between <span class='dq'>[</span> and <span class='dq'>]</span>"},
+    		{code:"[^...]", desc:"Any one character Not between <span class='dq'>[^</span>  and  <span class='dq'>]</span>"},
+    		{code:"[0-9]", desc:"Any one number between <span class='dq'>0</span> and <span class='dq'>9</span>"},
+    		{code:"[a-z]", desc:"Any one number between <span class='dq'>a</span> and <span class='dq'>z</span>"},
+    		{code:"[A-Z]", desc:"Any one number between <span class='dq'>A</span> and <span class='dq'>Z</span>"},
+    		{code:"[a-zA-Z]", desc:"Any one letter between <span class='dq'>a</span> and <span class='dq'>z</span> ,or between <span class='dq'>A</span> and <span class='dq'>Z</span>"},
+    		{code:"s+", desc:"Any string contains one or more <span class='dq'>s</span>"},
+    		{code:"s*", desc:"Any string contains zero or more <span class='dq'>s</span>"},
+    		{code:"s?", desc:"Any string contains zero or one <span class='dq'>s</span>"},
+    		{code:"s.m", desc:"Any string with one Character between <span class='dq'>s</span> and <span class='dq'>m</span> , ex: <span class='dq'>simple</span>"},
+    		{code:"s{5}", desc:"Any string contains 5 <span class='dq'>s</span>, ex: <span class='dq'>sssss</span>"},
+    		{code:"m{2,5}", desc:"Any string contains 2 to 5 <span class='dq'>m</span> , ex: <span class='dq'>mmmm</span> or <span class='dq'>mm</span>"},
+    		{code:"B{4,}", desc:"Any string contains at least 4 <span class='dq'>B</span> , or more"},
+    		{code:"^Hi", desc:"Any string starts with <span class='dq'>Hi</span>.. , ex <span class='dq'>Hi friend</span>..."},
+    		{code:"^\\$", desc:"Any string starts with <span class='dq'>$</span>.. , ex <span class='dq'>$50</span>..."},
+    		{code:"ing$", desc:"Any string ends with ..<span class='dq'>ing</span> , ex: <span class='dq'>playing</span>"},
+    		{code:"(goo|min|fa)", desc:"Any string contains <span class='dq'>goo</span>, <span class='dq'>min</span> ,or <span class='dq'>fa</span>"},
+    		{code:"\\s", desc:"whitespace character like (space ,tab ,newline)"},
+    		{code:"\\S", desc:"Non-whitespace characters"},
+    		{code:"\\d", desc:"digit (0-9)"},
+    		{code:"\\D", desc:"Non-digit"},
+    		{code:"\\w", desc:"word"},
+    		{code:"\\n", desc:"new line"},
+    		{code:"\\t", desc:"tab"}
+    	];
+
+    	$(function(){ //on page load	
+    		FillTuts();
+
+    		$(".icn-copy").click(function(){
+    			$ind = parseInt($(this).parent(".tut").attr("id"));
+
+	    		$(".copy").val(docs[$ind].code).select();
+	    		document.execCommand("copy");
+	    		toast("copied.",900);
+	    		$(".copy").blur();
+    		});
+    		$(".icn-use").click(function(){
+    			$(".reg-exp").focus();
+    			$ind = parseInt($(this).parent(".tut").attr("id"));
+
+	    		$(".reg-exp").val($(".reg-exp").val()+docs[$ind].code);
+	    		Test();
+	    		toast("added.",800);
+    		});
+
+
+
+    		$(".inp-box .text").on("focus",function(){
+    			$(this).addClass("focus");
+    		});
+    		$(".inp-box .text").on("blur",function(){
+    			if ($(this).val()=="")
+    				$(this).removeClass("focus");
+    		});
+
+			$param="g";
+			function Chk(obj){
+				$p=obj.data("param");
+				if (obj.hasClass("fa-toggle-on")){
+					indx=$param.indexOf($p);
+					$param=$param.replace($p,"");
+				}
+				else{
+					$param+=$p;
+				}
+				Test();
+			}
+
+			function toast(msg,duration){
+				$(".toast").text(msg);
+				$(".toast").addClass("toast-show");
+				setTimeout(function(){
+					$(".toast").removeClass("toast-show");
+				},duration);
+			}
+
+			function FillTuts(){
+				for (i=0; i<docs.length; i++){
+					$(".all-tuts").append("<div class='tut' id='"+i+"'><img class='float-right icn icn-copy' src='imgs/cp.png'><img class='float-right icn icn-use' src='imgs/ed.png'><h3>"+docs[i].code+"</h3><p>"+docs[i].desc+"</p></div>");
+				}
+			}
+			
+			function Test(){ 
+				$reg=$(".reg-exp").val();
+				$txt =$(".reg-test").val();
+				 
+				R=new RegExp($reg,$param);
+				console.log("reg: "+$reg+" , param: "+$param);
+				if (R.test($txt)){
+					$(".reg-test").removeClass("invalid");
+				}
+				else{ 
+					$(".reg-test").addClass("invalid"); 
+				} 
+			}
+			
+			$(".toggle").click(function(){
+				Chk($(this).children("i"));
+				$(this).children("i").toggleClass("fa-toggle-on ck-on");
+			});
+			$(".reg-exp , .reg-test").keyup(function(){
+			 	 Test();
+			 });
+
+
+			$(".me").click(function(){
+				window.location = "https://behance.net/hamza_herbou";
+			})
+
+			setTimeout(function(){
+				$(".loading .logo").css("opacity",0);
+				$(".loading").fadeOut(600);
+			},2000);
+    	})
+    </script>
+</body>
+</html>
